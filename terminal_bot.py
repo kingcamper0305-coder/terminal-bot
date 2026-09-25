@@ -510,6 +510,24 @@ def main():
     # Error handler
     app.add_error_handler(error_handler)
 
+    # Start a simple healthcheck HTTP server so Railway keeps us alive
+    import threading
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    
+    class HealthHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"OK")
+        def log_message(self, format, *args):
+            pass  # Don't log healthcheck hits
+    
+    health_port = int(os.getenv("PORT", "8080"))
+    health_server = HTTPServer(("0.0.0.0", health_port), HealthHandler)
+    health_thread = threading.Thread(target=health_server.serve_forever, daemon=True)
+    health_thread.start()
+    print(f"✅ Healthcheck server on port {health_port}")
+    
     # Start polling
     print("✅ Bot is running! Press Ctrl+C to stop.")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
