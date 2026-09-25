@@ -34,6 +34,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
 # Sign up at https://openrouter.ai (free credits available)
 AI_API_KEY = os.getenv("AI_API_KEY", "YOUR_API_KEY_HERE")
 AI_BASE_URL = os.getenv("AI_BASE_URL", "https://openrouter.ai/api/v1")
+# Free models (no API key needed): set AI_MODEL to "openrouter/qwen/qwen3.8-27b:free" and AI_API_KEY to any non-empty string
 
 # --- AI Model ---
 # Use any model OpenRouter supports, e.g.:
@@ -41,7 +42,7 @@ AI_BASE_URL = os.getenv("AI_BASE_URL", "https://openrouter.ai/api/v1")
 #   "anthropic/claude-3.5-sonnet" — Claude
 #   "google/gemini-2.0-flash"  — Gemini
 #   "deepseek/deepseek-chat"   — DeepSeek
-AI_MODEL = os.getenv("AI_MODEL", "openai/gpt-4o")
+AI_MODEL = os.getenv("AI_MODEL", "openrouter/qwen/qwen3.8-27b:free")
 
 # --- Security: Only these Telegram user IDs can talk to the bot ---
 # Find your ID: message @userinfobot on Telegram
@@ -475,10 +476,11 @@ def main():
         sys.exit(1)
 
     if AI_API_KEY == "YOUR_API_KEY_HERE":
-        print("⚠️  AI_API_KEY not set! AI chat will fail.")
-        print("   Get a key from https://openrouter.ai")
+        print("⚠️  AI_API_KEY not set! AI chat will fail unless using a free model.")
+        print("   Get a free key from https://openrouter.ai/keys")
         print("   export AI_API_KEY='your_key'")
-        print("   (The bot will still work for shell commands.)")
+        print("   For free AI: set AI_MODEL=openrouter/qwen/qwen3.8-27b:free")
+    print("   (The bot will still work for shell commands anyways.)")
 
     if not ALLOWED_USER_IDS:
         print("⚠️  WARNING: ALLOWED_USER_IDS is empty — ANYONE can use this bot!")
